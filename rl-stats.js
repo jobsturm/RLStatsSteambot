@@ -48,7 +48,7 @@ NewTrierBot.addTriggers([
         }
     },
     {
-        name: 'Play game',
+        name: 'Playgame',
         type: 'PlayGameTrigger',
         options: {
             appid: '252950'
