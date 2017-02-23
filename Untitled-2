@@ -1,0 +1,390 @@
+var ChatBot = require("steam-chat-bot").ChatBot;
+
+var NewTrierBot = new ChatBot('Clairest2', 'WGP2807mv', {
+    sentryFile: 'bot.newtrier2017.sentry',
+    logFile: 'bot.newtrier2017.log',
+    autoReconnect: true,
+    guardCode: '',
+    consoleLogLevel: 'silly',
+    displayName: 'New Trier Chat Bot',
+    steamapikey: 'C6A6A18DEE989FA0DDD8B045E5BACA4A',
+    disableWebserver: false,
+    webServerPort: 9090
+});
+
+
+var ntchatid = '103582791435108754';
+var testchatid = '103582791438731217';
+var phoenixchatid = '103582791439828295';
+var ntadmin = '76561198091343023';
+var ntadmin2 = '76561198088267448';
+
+var ntadmins = [ntadmin, ntadmin2]
+
+var roomNames = {
+	"103582791435108754": "New Trier",
+	"103582791438731217": "Chatbot Development",
+	"103582791439828295": "Phoenix Council"
+}
+
+NewTrierBot.addTriggers([
+
+  {
+		name: 'Logs',
+		type: 'LogTrigger',
+		options: {
+			logDir: './logs/', //the ./ should be unnecessary
+			roomNames: roomNames,
+			linesToSend: 250,
+			logUserChats: false,
+			logGroupChats: true,
+			web: true
+		}
+	},
+	{
+		name: "NetTrigger",
+		type: "GithubTrigger",
+		options: {
+			rooms: [testchatid],
+			secret: "ahem75@dyes",
+			showDetails: true,
+			path: "http://nt.efreakbnc.net:9090/NetTrigger/NetTrigger"
+		}
+	},
+	{
+		name: 'Math',
+		type: 'MathTrigger'
+	},
+
+	{
+		name: 'NotifyBot',
+		type: 'NotificationTrigger',
+		options: {
+			dbFile: 'newtrier2017.db'
+		}
+	},
+
+      { name: 'HelpCmd', type: 'ChatReplyTrigger', options: {
+                matches: ['!help','!triggers','!cmds','!commands'],
+                responses: ['Please view my profile for a list of commands.'],
+                exact: true, probability: 1, timeout: 1000 } },
+        { name: 'BugsCmd', type: 'ChatReplyTrigger', options: {
+                matches: ['!bug','!bugs','!issue','!feature'],
+                responses: ['You can submit bugs and feature requests at http://github.com/Efreak/node-steam-chat-bot/issues'],
+                exact: true, probability: 1, timeout: 1000 } },
+        { name: 'OwnerCmd', type: 'ChatReplyTrigger', options: {
+                matches: ['!owner','!banshee'],
+                responses: ['My owner is http://steamcommunity.com/id/dragonbanshee'],
+                exact: true, probability: 1, timeout: 1000 } },
+        { name: 'SourceCmd', type: 'ChatReplyTrigger', options: {
+                matches: ['!source','!about'],
+                responses: ['This bot is based on node-steam-chat-bot, a wrapper around node-steam, which is a nodejs port of SteamKit2. ' +
+			'You can find full source code and some documentation and examples at http://github.com/efreak/node-steam-chat-bot'],
+                exact: true, probability: 1, timeout: 1000 } },
+
+        {
+		name: 'Reddit',
+		type: 'ChatReplyTrigger',
+		options: {
+			matches: ['!reddit'],
+			responses: ['The link for the steam-chat-bot reddit is http://reddit.com/r/nodesteamchatbot , subscribe!'],
+			exact: true
+		}
+        },
+
+		{
+		name: 'EightBall',
+		type: 'ChatReplyTrigger',
+		options: {
+			matches: ['!8ball'],
+			responses: ['It is certain','It is decidedly so','Without a doubt','Yes, definitely','You may rely on it','As I see it, yes',
+					'Most likely','Outlook good','Yes','Signs point to yes','Reply hazy, try again','Ask again later',
+					'Better not tell you now','Cannot predict now','Concentrate and ask again',"Don't count on it",
+					'My sources say no','Outlook not so good','Very doubtful'],
+			timeout: 2*1000,
+			delay: 500
+			}
+		},
+		{
+			name: 'GG',
+			type: 'ChatReplyTrigger',
+			options: {
+				matches: ['gg', 'bg'],
+				responses: ['gg', 'bg'],
+				exact: true
+			}
+		},
+		{
+			name: 'LeaveChatTrigger',
+			type: 'LeaveChatTrigger'
+		},
+		/*
+		{
+			name: 'Break',
+			type: 'ChatReplyTrigger',
+			options: {
+				matches: '!fuckoffchatbot',
+				responses: 'abcdefghijklmnopqrstuvwxyz'
+			}
+		},
+		*/
+		{
+			name: 'Welp',
+			type: 'ChatReplyTrigger',
+			options: {
+				matches: ['welp', 'sigh'],
+				responses: ['welp', 'sigh'],
+				exact: true
+			}
+		},
+		{
+			name: 'Group',
+			type: 'BotCommandTrigger',
+			options: {
+				matches: ['!groups'],
+				callback: function(bot) { console.log(bot.groups[0]); }
+			}
+		},
+		{
+			name: 'UserEnter',
+			type: 'DoormatTrigger',
+			options: {
+				ignore: ['76561198008335925']
+			}
+		},
+/*		{
+			name: 'Link',
+			type: 'LinkNameTrigger',
+			options: {
+				timeout: 0,
+				probability: 1
+			}
+
+		},*/
+		{
+                name: "MuteCommand",
+                type: "BotCommandTrigger",
+                options: {
+                        matches: ["!mute"],
+                        exact: true,
+						user: ntadmins,
+                        callback: function(bot) { bot.mute(); }
+                }
+        },
+
+        {
+                name: "UnmuteCommand",
+                type: "BotCommandTrigger",
+                options: {
+                        matches: ["!unmute"],
+                        exact: true,
+						user: ntadmins,
+                        callback: function(bot) { bot.unmute(); }
+                }
+        },
+
+		{
+			name: 'KickUser',
+			type: 'KickTrigger',
+			options: {
+				user: ntadmins,
+				command: '!kick'
+			}
+		},
+
+		{
+			name: 'IsUpTest',
+			type: 'IsUpTrigger',
+			options: {
+				command: '!isup',
+				timeout: 2000
+			}
+		},
+
+
+		{
+			name: 'BanUser',
+			type: 'BanTrigger',
+			options: {
+				command: '!ban',
+				user: ntadmins
+			}
+		},
+
+		{
+			name: 'Money',
+			type: 'MoneyTrigger',
+			options: {
+				apikey: '0e393667036941c6b43da1cc723d66f2'
+			}
+		},
+
+		{
+			name: 'UnbanUser',
+			type: 'UnbanTrigger',
+			options: {
+				command: '!unban',
+				user: ntadmins
+			}
+		},
+
+		{
+			name: 'LockChat',
+			type: 'LockChatTrigger',
+			options: {
+				command: '!lock',
+				user: ntadmins
+			}
+		},
+
+		{
+			name: 'RTD',
+			type: 'RollTrigger',
+			options: {
+				command: '!roll'
+			}
+		},
+
+		{
+			name: 'UnlockChat',
+			type: 'UnlockChatTrigger',
+			options: {
+				command: '!unlock',
+				user: ntadmins
+			}
+		},
+
+        {
+                name: "HeartReply",
+                type: "ChatReplyTrigger",
+                options: {
+                        matches: ["<3"],
+                        responses: ["</3", "<3"],
+                        exact: true
+                }
+        },
+
+		{
+			name: 'Translate',
+			type: 'TranslateTrigger'
+		},
+
+        {
+                name: "AcceptChatInvite",
+                type: "AcceptChatInviteTrigger",
+                options: {
+                        autoJoinAfterDisconnect: true,
+                        joinAll: true
+                }
+        },
+
+        {
+                name: "AcceptFriendRequest",
+                type: "AcceptFriendRequestTrigger"
+        },
+
+        {
+                name: "SteamIDCheck",
+                type: "SteamrepTrigger",
+                options: {
+                        command: "!steamrep"
+                }
+        },
+
+        {
+                name: 'Google',
+                type: 'GoogleTrigger',
+                options: { command: '!google' }
+
+        },
+
+		{
+			name: 'GoogleImages',
+			type: 'GoogleImagesTrigger',
+			options: {
+				command: '!images'
+			}
+		},
+
+        {
+                name: "WolframReply",
+                type: "WolframAlphaTrigger",
+                options: { command: "!wolfram", appId: "7TKQX4-RJKGEK7KW4" }
+        },
+
+        {
+                name: "UDTrigger", // <-- these names need to be unique, it's the primary identifier. The plugins are an object; the second plugin with the same name will overwrite the first
+                type: "UrbanDictionaryTrigger",
+                options: { command: "!urban" }
+        },
+
+        {
+                name: "Youtube",
+                type: "YoutubeTrigger",
+                options: { command: "!youtube", rickrollChance: 0.01 , apikey: 'AIzaSyAQTIMcFvaACVRVXypCwGNvLBnU0ZqDBd4'}
+        },
+
+		{
+			name: 'OMDB',
+			type: 'OMDBTrigger',
+			options: {
+				command: '!movie'
+			}
+		},
+
+		{
+			name: 'BotInfo',
+			type: 'InfoTrigger',
+			options: {
+				command: '!status'
+			}
+		},
+
+        //check steamrep on every user who joins. Notify the channel if they're a scammer.
+        { name: 'SteamrepOnJoin',
+                type: 'SteamrepOnJoinTrigger' // options: {}
+        },
+
+    {
+      name: 'CheckBans',
+      type: 'BanCheckTrigger',
+      options: {
+        apiKey: 'DA29233DF11B21C3600769B57EFBB167',
+        command: '!checkbans'
+      }
+    },
+    {
+  	name: "Eval",
+  	type: "EvalTrigger",
+  	options: {
+  		users: ['76561198091343023'],
+  		evalUnsafe: true
+  	}
+  },
+  {
+  	name: "BTC",
+  	type: "BitcoinTrigger",
+  	options: {
+  		clientID: "8bfc3d9fb98f98edf0ea792be4d2835318c4894e02d223c5957b33a4747c1786",
+  		clientSecret: "ee625e0188470f07e90cbda2433cf2f1506292938892b6a1b1a5036f06fdc5eb",
+  		redirectURI: "https://nt.efreakbnc.net/coinbase/"
+  	}
+  },
+  {
+  	name: 'steamID',
+  	type: 'SteamIDTrigger'
+  },
+  {
+  	name: 'CSGOStat',
+  	type: 'CSGOStatTrigger'
+  }
+
+]);
+
+NewTrierBot.connect();
+
+setTimeout(function() {
+		NewTrierBot.joinChat(ntchatid, true);
+		NewTrierBot.joinChat(testchatid, true);
+		NewTrierBot.joinChat(phoenixchatid, true);
+}, 1500);
