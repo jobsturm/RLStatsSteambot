@@ -19,7 +19,7 @@ var phoenixchatid = '103582791439828295';
 var ntadmin = '76561198091343023';
 var ntadmin2 = '76561198088267448';
 
-var ntadmins = [ntadmin, ntadmin2]
+var ntadmins = [ntadmin, ntadmin2];
 
 var roomNames = {
     "108103848177745018": "Rocket League Stats room"
